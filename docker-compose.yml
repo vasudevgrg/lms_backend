@@ -1,0 +1,63 @@
+version: '3.9'
+
+services:
+  # postgres DB service
+  postgres_db:
+    image: postgres:16.1-alpine3.18
+    container_name: local_pgdb
+    restart: always
+    ports:
+      - ${DB_FORWARD_PORT:-5432}:5432
+    environment:
+      - POSTGRES_USER=${DB_USER:-"postgres"}
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-"zenmonk"}
+      - POSTGRES_DB=${DB_NAME:-"leave_management_service_db"}
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    networks:
+      - leave_management_service_network
+  
+  #pgAdmin
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin4_container
+    restart: always
+    ports:
+      - ${PGADMIN_FORWARD_PORT:-8888}:80
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    networks:
+      - leave_management_service_network
+  
+  # Backend service
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: dependency-base
+    ports:
+      - ${APP_FORWARD_PORT:-8080}:8080
+    volumes:
+      - .:/app
+    networks:
+      - leave_management_service_network
+    depends_on:
+      - postgres_db
+    restart: on-failure
+    tty: true
+    stdin_open: true
+    expose:
+      - ${APP_FORWARD_PORT:-8080}
+    
+networks:
+  leave_management_service_network:
+    name: leave-management-network
+    external: true
+
+volumes:
+  pg_data: {}
+  pgadmin_data: {}
+#docker network create leave-management-network

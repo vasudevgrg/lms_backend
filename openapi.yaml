@@ -1,0 +1,4068 @@
+openapi: 3.0.0
+info:
+  title: Test languages
+  version: 1.0.0
+paths:
+  /organizations:
+    get:
+      tags:
+        - Organization
+      summary: Get all organizations
+      description: Get the list of the organizations
+      parameters:
+        - name: page
+          in: query
+          description: Current page number
+          example: 1
+          schema:
+            type: number
+            default: 1
+        - name: limit
+          in: query
+          description: Number of users per page. Maximum limit 20
+          example: 10
+          schema:
+            type: number
+            default: 10
+        - name: order
+          in: query
+          description: Column sort by ascending and descending order
+          schema:
+            type: string
+            default: asc
+            enum:
+              - asc
+              - desc
+        - name: order_column
+          in: query
+          description: Column name according to which sorting will take place
+          schema:
+            type: string
+            default: updated_at
+      responses:
+        "200":
+          description: Succesfully got all organizations list.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AllOrganizationsResponseSchema"
+
+        "204":
+          description: No content found
+        "400":
+          $ref: "#/components/responses/bad_request"
+        "500":
+          $ref: "#/components/responses/internal_server_error"
+    post:
+      tags:
+        - Organization
+      summary: Create a new organization
+      description: Creation of a new organization
+      requestBody:
+        description: Payload for creating a new organization
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OrganizationRequestSchema"
+        required: true
+      responses:
+        "201":
+          description: New organization created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrganizationResponseSchema"
+        "400":
+          $ref: "#/components/responses/bad_request"
+        "500":
+          $ref: "#/components/responses/internal_server_error"
+  /organizations/{organization_uuid}:
+    get:
+      tags:
+        - Organization
+      summary: Get organization by uuid
+      description: Get the organization by uuid
+      parameters:
+        - name: organization_uuid
+          in: path
+          description: UUID of the organization
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Successfully got the organization by uuid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrganizationResponseSchema"
+        "400":
+          $ref: "#/components/responses/invalid_payload"
+        "404":
+          $ref: "#/components/responses/document_not_found"
+        "500":
+          $ref: "#/components/responses/internal_server_error"
+    put:
+      tags:
+        - Organization
+      summary: Update organization by uuid
+      description: Update the organization by uuid
+      parameters:
+        - name: organization_uuid
+          in: path
+          description: UUID of the organization
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        description: Payload for updating a organization
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OrganizationRequestSchema"
+        required: true
+      responses:
+        "200":
+          description: Successfully updated the organization by uuid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrganizationResponseSchema"
+        "400":
+          $ref: "#/components/responses/invalid_payload"
+        "404":
+          $ref: "#/components/responses/document_not_found"
+        "500":
+          $ref: "#/components/responses/internal_server_error"
+  /organizations/{organization_uuid}/users:
+    get:
+      tags:
+        - Organization Users
+      summary: Get all users of a organization
+      description: Get the list of the users of a organization
+      parameters:
+        - name: organization_uuid
+          in: path
+          description: UUID of the organization
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Succesfully got all users list of a organization.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AllUsersResponseSchema"
+        "204":
+          description: No content found
+        "400":
+          $ref: "#/components/responses/bad_request"
+        "500":
+          $ref: "#/components/responses/internal_server_error"
+    post:
+      tags:
+        - Organization Users
+      summary: Create a new user of Organization
+      description: Creation of a new user of Organization
+      requestBody:
+        description: Payload for creating a new Organization user
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserRequestSchema"
+        required: true
+      parameters:
+        - name: organization_uuid
+          in: path
+          description: UUID of the organization
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: user_id
+          in: path
+          description: User ID of the user
+          required: true
+          schema:
+            type: number
+            format: uuid      
+        - name: user_id
+          in: path
+          description: User ID of the user
+          required: true
+          schema:
+            type: number
+      responses:
+        "200":
+          description: Succesfully got all roles list of a organization.
+          content:
+           application/json:
+             schema:
+               type: object
+               properties:
+                 message:
+                   type: string
+        "400":
+          $ref: "#/components/responses/bad_request"
+        "500":
+          $ref: "#/components/responses/internal_server_error"          
+  /organizations/{organization_uuid}/users/{user_id}:
+    get:
+      tags:
+        - Organization Users
+      summary: Get user by user_id
+      description: Get the user by user_id
+      parameters:
+        - name: organization_uuid
+          in: path
+          description: UUID of the organization
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: user_uuid
+          in: path
+          description: User UUID of the user
+          required: true
+          schema:
+            type: number
+      responses:
+        "200":
+          description: Successfully got the user by user_id.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserResponseSchema"
+        "400":
+          $ref: "#/components/responses/invalid_payload"
+        "404":
+          $ref: "#/components/responses/document_not_found"
+        "500":
+          $ref: "#/components/responses/internal_server_error"   
+    put:
+      tags:
+        - Organization Users
+      summary: Update user by user_id and organization_id
+      description: Update the user by user_id and organization_id
+      requestBody:
+        description: Payload for updating a new Organization user
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserRequestSchema"      
+      parameters:
+        - name: organization_uuid
+          in: path
+          description: UUID of the organization
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: user_uuid
+          in: path
+          description: User UUID of the user
+          required: true
+          schema:
+            type: number
+      responses:
+        "200":
+          description: Succesfully got all roles list of a organization.
+          content:
+           application/json:
+             schema:
+               type: object
+               properties:
+                 message:
+                   type: string
+        "400":
+          $ref: "#/components/responses/invalid_payload"
+        "404":
+          $ref: "#/components/responses/document_not_found"
+        "500":
+          $ref: "#/components/responses/internal_server_error"         
+  /organizations/{organization_uuid}/roles:
+    get:
+      tags:
+        - Organization Roles
+      summary: Get all roles of a organization
+      description: Get the list of the roles of a organization
+      parameters:
+        - name: organization_uuid
+          in: path
+          description: UUID of the organization
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Succesfully got all roles list of a organization.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AllOrganizationRolesResponseSchema"
+        "204":
+          description: No content found
+        "400":
+          $ref: "#/components/responses/bad_request"
+        "500":
+          $ref: "#/components/responses/internal_server_error"
+    post:
+      tags:
+        - Organization Roles
+      summary: Add Organization Role of Organization
+      description: Add Organization Role of Organization
+      requestBody:
+        description: Payload for Organization Role
+        content:
+          application/json:
+            schema:
+              type: object 
+              properties:
+                role_uuid:
+                  type: string
+                name:
+                  type: string
+                description:
+                  type: string
+                shift_type:
+                  type: string
+                  $ref: "#/components/schemas/ShiftTypeEnum"      
+      parameters:
+        - name: organization_uuid
+          in: path
+          description: UUID of the organization
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Succesfully got all roles list of a organization.
+          content:
+           application/json:
+             schema:
+               type: object
+               properties:
+                 message:
+                   type: string
+                   example: "Organization role added successfully."
+        "204":
+          description: No content found
+        "400":
+          $ref: "#/components/responses/bad_request"
+        "500":
+          $ref: "#/components/responses/internal_server_error"
+  /organizations/{organization_uuid}/roles/bulk:
+    post:
+      tags:
+        - Organization Roles
+      summary: Add Organization Role of Organization in bulk
+      description: Add Organization Role of Organization in bulk
+      requestBody:
+        description: Payload for Organization Role
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  shift_type:
+                    type: string
+                    $ref: "#/components/schemas/ShiftTypeEnum"
+                  role_uuid:
+                    type: string
+      parameters:
+        - name: organization_uuid
+          in: path
+          description: UUID of the organization
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Succesfully added all roles list of a organization.
+          content:
+           application/json:
+             schema:
+               type: object
+               properties:
+                 message:
+                   type: string
+                   example: "Organization roles added successfully."
+        "204":
+          description: No content found
+        "400":
+          $ref: "#/components/responses/bad_request"
+        "500":
+          $ref: "#/components/responses/internal_server_error"
+
+  /organizations/{organization_uuid}/roles/{role_uuid}:
+    get:
+      tags:
+        - Organization Roles
+      summary: Get role by role_uuid
+      description: Get the role by role_uuid
+      parameters:
+        - name: organization_uuid
+          in: path
+          description: UUID of the organization
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: role_uuid
+          in: path
+          description: Role ID of the role
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Successfully got the role by role_uuid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrganizationRoleResponseSchema"
+        "400":
+          $ref: "#/components/responses/invalid_payload"
+        "404":
+          $ref: "#/components/responses/document_not_found"
+        "500":
+          $ref: "#/components/responses/internal_server_error"    
+    put:
+      tags:
+        - Organization Roles
+      summary: Get role by role_uuid
+      description: Get the role by role_uuid
+      requestBody:
+        description: Payload for  updating the role of organization
+        content:
+          application/json:
+            schema:
+              type: object 
+              properties:
+                role_description:
+                  type: string
+                shift_type:
+                  type: string
+                  $ref: "#/components/schemas/ShiftTypeEnum" 
+      parameters:
+        - name: organization_uuid
+          in: path
+          description: UUID of the organization
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: role_uuid
+          in: path
+          description: Role ID of the role
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Succesfully updated Organization Role
+          content:
+           application/json:
+             schema:
+               type: object
+               properties:
+                 message:
+                   type: string
+        "400":
+          $ref: "#/components/responses/invalid_payload"
+        "404":
+          $ref: "#/components/responses/document_not_found"
+        "500":
+          $ref: "#/components/responses/internal_server_error"                   
+  /organizations/{organization_uuid}/roles/{role_uuid}/activate:
+    patch:
+      tags:
+        - Organization Roles
+      summary: Activate organization Role
+      description: Activate organization Role of  the organization
+
+      parameters:
+        - name: organization_uuid
+          in: path
+          description: UUID of the organization
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: role_uuid
+          in: path
+          description: Role ID of the role
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Successfully activated organization Role
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "400":
+          $ref: "#/components/responses/invalid_payload"
+        "404":
+          $ref: "#/components/responses/document_not_found"
+        "500":
+          $ref: "#/components/responses/internal_server_error"   
+  /organizations/{organization_uuid}/roles/{role_uuid}/deactivate:
+    patch:
+      tags:
+        - Organization Roles
+      summary: Deactivate organization Role
+      description: Deactivate organization Role of  the organization
+
+      parameters:
+        - name: organization_uuid
+          in: path
+          description: UUID of the organization
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: role_uuid
+          in: path
+          description: Role ID of the role
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Successfully deactivated organization Role
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "400":
+          $ref: "#/components/responses/invalid_payload"
+        "404":
+          $ref: "#/components/responses/document_not_found"
+        "500":
+          $ref: "#/components/responses/internal_server_error"              
+  /organizations/{organization_uuid}/roles/{role_uuid}/permissions:
+    put:
+      tags:
+        - Organization Roles
+      summary: Update organization Role Permissions
+      description: Update organization Role Permissions of  the organization
+      requestBody:
+        description: Payload for updating role permissions
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  permission_uuid:  
+                    type: string
+                  action:
+                    type: array
+                    items:
+                      type: string
+        required: true
+      parameters:
+        - name: organization_uuid
+          in: path
+          description: UUID of the organization
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: role_uuid
+          in: path
+          description: Role ID of the role
+          required: true
+          schema:
+            type: string
+            format: string
+      responses:
+        "200":
+          description: Successfully updated organization Role permissions
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "400":
+          $ref: "#/components/responses/invalid_payload"
+        "404":
+          $ref: "#/components/responses/document_not_found"
+        "500":
+          $ref: "#/components/responses/internal_server_error"              
+ 
+  /organizations/{organization_uuid}/holidays:
+    get:
+      tags:
+        - Organization Holidays
+      summary: Get all holidays of a organization
+      description: Get the list of the holidays of a organization
+      parameters:
+        - name: organization_uuid
+          in: path
+          description: UUID of the organization
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: holiday_uuid
+          in: query
+          description: Get all holidays by holiday uuid
+          schema:
+            type: string
+        - name: date_range
+          in: query
+          description: Get all holidays by date range.
+          schema:
+            type: array
+            items: 
+              type: string
+              format: date-time
+      responses:
+        "200":
+          description: Succesfully got all holidays list of a organization.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AllHolidaysResponseSchema"
+        "204":
+          description: No content found
+        "400":
+          $ref: "#/components/responses/bad_request"
+        "500":
+          $ref: "#/components/responses/internal_server_error"
+    post:
+      tags:
+        - Organization Holidays
+      summary: Create holiday of a organization
+      description: Create holiday of a organization
+      requestBody:
+        description: holiday uuid of holiday for organization
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                holiday_uuid: 
+                  type: string
+      parameters:
+        - name: organization_uuid
+          in: path
+          description: UUID of the organization
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Succesfully created organization holiday
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "204":
+          description: No content found
+        "400":
+          $ref: "#/components/responses/bad_request"
+        "500":
+          $ref: "#/components/responses/internal_server_error"      
+  /organizations/{organization_uuid}/holidays/bulk:
+     post:
+      tags:
+        - Organization Holidays
+      summary: Create holiday of a organization in bulk
+      description: Create holiday of a organization
+      requestBody:
+        description: holiday uuid of holiday for organization
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  holiday_uuid: 
+                    type: string
+      parameters:
+        - name: organization_uuid
+          in: path
+          description: UUID of the organization
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Succesfully created organization holiday in bulk
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "204":
+          description: No content found
+        "400":
+          $ref: "#/components/responses/bad_request"
+        "500":
+          $ref: "#/components/responses/internal_server_error"  
+  /organizations/{organization_uuid}/holidays/{holiday_uuid}/activate:
+    patch:
+      tags:
+        - Organization Holidays
+      summary: Activate organization Holiday
+      description: Activate organization Holiday of  the organization
+
+      parameters:
+        - name: organization_uuid
+          in: path
+          description: UUID of the organization
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: holiday_uuid
+          in: path
+          description: Holiday UUID of the role
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Successfully activated organization Holiday
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "400":
+          $ref: "#/components/responses/invalid_payload"
+        "404":
+          $ref: "#/components/responses/document_not_found"
+        "500":
+          $ref: "#/components/responses/internal_server_error"   
+  /organizations/{organization_uuid}/holidays/{holiday_uuid}/deactivate:
+    patch:
+      tags:
+        - Organization Holidays
+      summary: Deactivate organization Holiday
+      description: Deactivate organization Holiday of  the organization
+
+      parameters:
+        - name: organization_uuid
+          in: path
+          description: UUID of the organization
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: holiday_uuid
+          in: path
+          description: Holiday UUID of the role
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Successfully deactivated organization Holiday
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "400":
+          $ref: "#/components/responses/invalid_payload"
+        "404":
+          $ref: "#/components/responses/document_not_found"
+        "500":
+          $ref: "#/components/responses/internal_server_error"   
+ 
+  /organizations/{organization_uuid}/leave-types:
+    post:
+      tags:
+        - Organization Leaves
+      summary: Create a new leave type
+      description: Creation of a new leave type
+      requestBody:
+        description: Payload for creating a new leave type
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LeaveType"
+        required: true
+      parameters:
+        - name: organization_uuid
+          in: path
+          description: UUID of the organization
+          required: true
+          schema:
+            type: string
+            format: uuid        
+      responses:
+        "200":
+          description: Succesfully got all roles list of a organization.
+          content:
+           application/json:
+             schema:
+               type: object
+               properties:
+                 message:
+                   type: string
+        "400":
+          $ref: "#/components/responses/bad_request"
+        "409":
+          $ref: "#/components/responses/conflict"
+        "500":
+          $ref: "#/components/responses/internal_server_error"
+    get:
+      tags:
+        - Organization Leaves
+      summary: Get all leave types
+      description: Get the list of the leave types
+      parameters:
+        - name: organization_uuid
+          in: path
+          required: true
+          description: Get all leave types by organization uuid.
+          schema:
+            type: string
+            format: uuid
+        - name: code
+          in: query
+          description: Get all leave types by code.
+          schema:
+            type: string
+        - name: page
+          in: query
+          description: Current page number
+          example: 1
+          schema:
+            type: number
+            default: 1
+        - name: limit
+          in: query
+          description: Number of leave types per page. Maximum limit 20
+          example: 10
+          schema:
+            type: number
+            default: 10
+        - name: order
+          in: query
+          description: Column sort by ascending and descending order
+          schema:
+            type: string
+            default: asc
+            enum:
+              - asc
+              - desc
+        - name: order_column
+          in: query
+          description: Column name according to which sorting will take place
+          schema:
+            type: string
+            default: updated_at
+      responses:
+        "200":
+          description: Succesfully got all leave types list.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LeaveTypeListResponseSchema"
+        "204":
+          description: No content found
+        "400":
+          $ref: "#/components/responses/bad_request"
+        "500":
+          $ref: "#/components/responses/internal_server_error"
+  /organizations/{organization_uuid}/leave-types/{leave_type_uuid}:
+    get:
+      tags:
+        - Organization Leaves
+      summary: Get leave type by uuid
+      description: Get the leave type by uuid
+      parameters:
+        - name: organization_uuid
+          in: path
+          required: true
+          description: Get all leave types by organization uuid.
+          schema:
+            type: string
+            format: uuid      
+        - name: leave_type_uuid
+          in: path
+          description: UUID of the leave type
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Successfully got the leave type by uuid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LeaveTypeResponseSchema"
+        "400":
+          $ref: "#/components/responses/invalid_payload"
+        "404":
+          $ref: "#/components/responses/document_not_found"
+        "500":
+          $ref: "#/components/responses/internal_server_error"
+    put:
+      tags:
+        - Organization Leaves
+      summary: Update leave type by uuid
+      description: Update the leave type by uuid
+      parameters:
+        - name: uuid
+          in: path
+          description: UUID of the leave type
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        description: Payload for updating a leave type
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LeaveType"
+        required: true
+      responses:
+        "200":
+          description: Successfully updated the leave type by uuid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LeaveTypeResponseSchema"
+        "400":
+          $ref: "#/components/responses/invalid_payload"
+        "404":
+          $ref: "#/components/responses/document_not_found"
+        "500":
+          $ref: "#/components/responses/internal_server_error"
+  /organizations/{organization_uuid}/leave-report:
+    get:
+      tags:
+        - Organization Leaves
+      summary: Get Organization Leave Report
+      description: Get Organization Leave Report
+      parameters:
+        - name: organization_uuid
+          in: path
+          description: UUID of the organization
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: date_range
+          in: query
+          description: Date Range of Leave Report
+          required: true
+          schema:
+            type: array
+      responses:
+        "200":
+          description: Successfully got the Leave Report of the Organization.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrganizationLeaveReportSchema"
+        "400":
+          $ref: "#/components/responses/invalid_payload"
+        "404":
+          $ref: "#/components/responses/document_not_found"
+        "500":
+          $ref: "#/components/responses/internal_server_error"
+  /organizations/{organization_uuid}/activate:
+    patch:
+      tags:
+        - Organization
+      summary: Activate organization 
+      description: Activate organization
+
+      parameters:
+        - name: organization_uuid
+          in: path
+          description: UUID of the organization
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Successfully activated organization 
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "400":
+          $ref: "#/components/responses/invalid_payload"
+        "404":
+          $ref: "#/components/responses/document_not_found"
+        "500":
+          $ref: "#/components/responses/internal_server_error"   
+  /organizations/{organization_uuid}/deactivate:
+    patch:
+      tags:
+        - Organization
+      summary: Deactivate organization 
+      description: Deactivate organization 
+
+      parameters:
+        - name: organization_uuid
+          in: path
+          description: UUID of the organization
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Successfully deactivated organization Role
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "400":
+          $ref: "#/components/responses/invalid_payload"
+        "404":
+          $ref: "#/components/responses/document_not_found"
+        "500":
+          $ref: "#/components/responses/internal_server_error"              
+ 
+  /departments:
+    post:
+      tags:
+        - Department
+      summary: Create a new department
+      description: Creation of a new department
+      requestBody:
+        description: Payload for creating a new department
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DepartmentRequestSchema"
+        required: true
+      responses:
+        "201":
+          description: New department created successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "400":
+          $ref: "#/components/responses/bad_request"
+        "500":
+          $ref: "#/components/responses/internal_server_error"
+    get:
+      tags:
+        - Department
+      summary: Get all departments
+      description: Get the list of the departments
+      parameters:
+        - name: organization_uuid
+          in: query
+          description: Get all departments by organization uuid.
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Succesfully got all departments list.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AllDepartmentsResponseSchema"
+        "204":
+          $ref: "#/components/responses/document_not_found"
+        "400":
+          $ref: "#/components/responses/bad_request"
+        "500":
+          $ref: "#/components/responses/internal_server_error"
+  /departments/{department_uuid}:
+    get:
+      tags:
+        - Department
+      summary: Get department by uuid
+      description: Get the department by uuid
+      parameters:
+        - name: department_uuid
+          in: path
+          description: UUID of the department
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Successfully got the department by uuid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DepartmentResponseSchema"
+        "400":
+          $ref: "#/components/responses/invalid_payload"
+        "404":
+          $ref: "#/components/responses/document_not_found"
+        "500":
+          $ref: "#/components/responses/internal_server_error"
+    put:
+      tags:
+        - Department
+      summary: Update department by uuid
+      description: Update the department by uuid
+      parameters:
+        - name: department_uuid
+          in: path
+          description: UUID of the department
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        description: Payload for updating a department
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DepartmentSchema"
+        required: true
+      responses:
+        "200":
+          description: Successfully updated the department by uuid.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "400":
+          $ref: "#/components/responses/invalid_payload"
+        "404":
+          $ref: "#/components/responses/document_not_found"
+        "500":
+          $ref: "#/components/responses/internal_server_error"
+  /departments/{department_uuid}/activate:
+    patch:
+      tags:
+        - Department
+      summary: Activate department 
+      description: Activate department
+
+      parameters:
+        - name: department_uuid
+          in: path
+          description: UUID of the department
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Successfully activated department 
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "400":
+          $ref: "#/components/responses/invalid_payload"
+        "404":
+          $ref: "#/components/responses/document_not_found"
+        "500":
+          $ref: "#/components/responses/internal_server_error"   
+  /departments/{department_uuid}/deactivate:
+    patch:
+      tags:
+        - Department
+      summary: Deactivate department 
+      description: Deactivate department
+
+      parameters:
+        - name: department_uuid
+          in: path
+          description: UUID of the department
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Successfully deactivated department 
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "400":
+          $ref: "#/components/responses/invalid_payload"
+        "404":
+          $ref: "#/components/responses/document_not_found"
+        "500":
+          $ref: "#/components/responses/internal_server_error"             
+
+  /roles:
+    post:
+      tags:
+        - Role
+      summary: Create a new role
+      description: Creation of a new role
+      requestBody:
+        description: Payload for creating a new role
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RoleRequestSchema"
+        required: true
+      responses:
+        "201":
+          description: New role created successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "400":
+          $ref: "#/components/responses/bad_request"
+        "500":
+          $ref: "#/components/responses/internal_server_error"
+    get:
+      tags:
+        - Role
+      summary: Get all roles
+      description: Get the list of the roles
+      responses:
+        "200":
+          description: Succesfully got all roles list.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AllRolesResponseSchema"
+        "204":
+          description: No content found
+        "400":
+          $ref: "#/components/responses/bad_request"
+        "500":
+          $ref: "#/components/responses/internal_server_error"
+  /roles/{uuid}:
+    get:
+      tags:
+        - Role
+      summary: Get role by uuid
+      description: Get the role by uuid
+      parameters:
+        - name: uuid
+          in: path
+          description: UUID of the role
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Successfully got the role by uuid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RoleResponseSchema"
+        "400":
+          $ref: "#/components/responses/invalid_payload"
+        "404":
+          $ref: "#/components/responses/document_not_found"
+        "500":
+          $ref: "#/components/responses/internal_server_error"
+    put:
+      tags:
+        - Role
+      summary: Update role by uuid
+      description: Update the role by uuid
+      parameters:
+        - name: uuid
+          in: path
+          description: UUID of the role
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        description: Payload for updating a role
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RoleRequestSchema"
+        required: true
+      responses:
+        "201":
+          description: New role created successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "400":
+          $ref: "#/components/responses/invalid_payload"
+        "404":
+          $ref: "#/components/responses/document_not_found"
+        "500":
+          $ref: "#/components/responses/internal_server_error"
+
+  /users:
+    post:
+      tags:
+        - User
+      summary: Create a new user
+      description: Creation of a new user
+      requestBody:
+        description: Payload for creating a new user
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserRequestSchema"
+        required: true
+      responses:
+        "201":
+          description: New user created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IndividualUserResponseSchema"
+        "400":
+          $ref: "#/components/responses/bad_request"
+        "500":
+          $ref: "#/components/responses/internal_server_error"
+    get:
+      tags:
+        - User
+      summary: Get all users
+      description: Get the list of the users
+      parameters:
+        - name: email
+          in: query
+          description: Get all users by email.
+          schema:
+            type: string
+            format: email
+        - name: role_uuid
+          in: query
+          description: Get all users by role uuid.
+          schema:
+            type: string
+            format: uuid
+        - name: department_uuid
+          in: query
+          description: Get all users by department uuid.
+          schema:
+            type: string
+            format: uuid
+        - name: organization_uuid
+          in: query
+          description: Get all users by organization uuid.
+          schema:
+            type: string
+            format: uuid
+        - name: status
+          in: query
+          description: Get all users by status.
+          schema:
+            $ref: "#/components/schemas/UserStatusType"
+        - name: page
+          in: query
+          description: Current page number
+          example: 1
+          schema:
+            type: number
+            default: 1
+        - name: limit
+          in: query
+          description: Number of users per page. Maximum limit 20
+          example: 10
+          schema:
+            type: number
+            default: 10
+        - name: order
+          in: query
+          description: Column sort by ascending and descending order
+          schema:
+            type: string
+            default: asc
+            enum:
+              - asc
+              - desc
+        - name: order_column
+          in: query
+          description: Column name according to which sorting will take place
+          schema:
+            type: string
+            default: updated_at
+      responses:
+        "200":
+          description: Succesfully got all users list.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AllUsersResponseSchema"
+        "204":
+          description: No content found
+        "400":
+          $ref: "#/components/responses/bad_request"
+        "500":
+          $ref: "#/components/responses/internal_server_error"
+  /users/verify:
+    post:
+      tags:
+        - User
+      summary: Verify user
+      description: Verification of new User
+      requestBody:
+        description: Payload for creating a new user
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password: 
+                  type: string
+        required: true
+      responses:
+        "201":
+          description: New user created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserResponseSchema"
+        "400":
+          $ref: "#/components/responses/bad_request"
+        "500":
+          $ref: "#/components/responses/internal_server_error"  
+  /users/{user_id}:
+    get:
+      tags:
+        - User
+      summary: Get user by User ID
+      description: Get the user by User ID
+      parameters:
+        - name: user_id
+          in: path
+          description: User ID of the user
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Successfully got the user by User ID.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IndividualUserResponseSchema"
+        "400":
+          $ref: "#/components/responses/invalid_payload"
+        "404":
+          $ref: "#/components/responses/document_not_found"
+        "500":
+          $ref: "#/components/responses/internal_server_error"
+    put:
+      tags:
+        - User
+      summary: Update user by User ID
+      description: Update the user by User ID
+      parameters:
+        - name: user_id
+          in: path
+          description: User ID of the user
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        description: Payload for updating a user
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserSchema"
+        required: true
+      responses:
+        "200":
+          description: Succesfully added all roles list of a organization.
+          content:
+           application/json:
+             schema:
+               type: object
+               properties:
+                 message:
+                   type: string
+        "400":
+          $ref: "#/components/responses/invalid_payload"
+        "404":
+          $ref: "#/components/responses/document_not_found"
+        "500":
+          $ref: "#/components/responses/internal_server_error"
+  /users/{user_id}/personal-details:
+    put:
+      tags:
+        - User
+      summary: Update user personal details by User UUID
+      description: Update the user personal details by User ID
+      parameters:
+        - name: user_id
+          in: path
+          description: User ID of the user
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        description: Payload for updating a user personal details
+        content:
+          application/json:
+            schema:
+             $ref: "#/components/schemas/UserPersonalDetailsRequestSchema"  
+        required: true
+      responses:
+        "200":
+          description: Succesfully added all roles list of a organization.
+          content:
+           application/json:
+             schema:
+               type: object
+               properties:
+                 message:
+                   type: string
+        "400":
+          $ref: "#/components/responses/invalid_payload"
+        "404":
+          $ref: "#/components/responses/document_not_found"
+        "500":
+          $ref: "#/components/responses/internal_server_error"  
+  /users/{user_id}/leave_requests:
+   get:
+      tags:
+        - User Leaves
+      summary: Get all leave requests of user
+      description: Get all leave requests of user
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          description: Get all leave types by organization uuid.
+          schema:
+            type: string
+            format: uuid
+        - name: code
+          in: query
+          description: Get all leave types by code.
+          schema:
+            type: string
+        - name: page
+          in: query
+          description: Current page number
+          example: 1
+          schema:
+            type: number
+            default: 1
+        - name: limit
+          in: query
+          description: Number of leave types per page. Maximum limit 20
+          example: 10
+          schema:
+            type: number
+            default: 10
+        - name: order
+          in: query
+          description: Column sort by ascending and descending order
+          schema:
+            type: string
+            default: asc
+            enum:
+              - asc
+              - desc
+        - name: order_column
+          in: query
+          description: Column name according to which sorting will take place
+          schema:
+            type: string
+            default: updated_at    
+      responses:
+        "200":
+          description: Succesfully got all users list.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserLeaveRequestResponseSchema"
+        "204":
+          description: No content found
+        "400":
+          $ref: "#/components/responses/bad_request"
+        "500":
+          $ref: "#/components/responses/internal_server_error"  
+   post:
+      tags:
+        - User Leaves
+      summary: Create a new user leave request
+      description: Creation of a new user leave Request
+      parameters:
+        - name: user_id
+          in: path
+          description: User ID of the user
+          required: true
+          schema:
+            type: string
+            format: uuid      
+      requestBody:
+        description: Payload for creating a new user leave Request
+        content:
+          application/json:
+           schema:
+            type: object
+            properties:
+              leave_type_uuid:
+                type: string 
+                format: uuid
+              start_date:
+                type: string
+                format: date-time
+              end_date:
+                type: string
+                format: date-time
+              reason:
+                type: string
+              type:
+                type: string
+                enum:
+                  - full-day
+                  - half-day
+                  - short-leave
+              managers: 
+                type: array
+                items:
+                 type: string
+                 format: uuid
+        required: true
+      responses:
+        "201":
+          description: New user created successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: 
+                    type: string
+        "400":
+          $ref: "#/components/responses/bad_request"
+        "500":
+          $ref: "#/components/responses/internal_server_error"                                    
+
+  /users/{user_id}/leave_requests/leave_request_uuid:
+   get:
+      tags:
+        - User Leaves
+      summary: Get all leave request of user
+      description: Get all leave request of user
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          description: Get all leave types by organization uuid.
+          schema:
+            type: string
+            format: uuid
+        - name: leave_request_uuid
+          in: path
+          required: true
+          description: Get all leave requests by leave request uuid
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Succesfully got all users list.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserLeaveRequestResponseSchema"
+        "204":
+          description: No content found
+        "400":
+          $ref: "#/components/responses/bad_request"
+        "500":
+          $ref: "#/components/responses/internal_server_error" 
+   put:
+      tags:
+        - User Leaves
+      summary: update user leave request
+      description: Updation of user leave Request
+      parameters:
+        - name: user_id
+          in: path
+          description: User ID of the user
+          required: true
+          schema:
+            type: string
+            format: uuid  
+        - name: leave_request_uuid
+          in: path
+          required: true
+          description: Get all leave requests by leave request uuid
+          schema:
+            type: string
+            format: uuid                
+      requestBody:
+        description: Payload for updating a new user leave Request
+        content:
+          application/json:
+           schema:
+            type: object
+            properties:
+              leave_type_uuid:
+                type: string 
+                format: uuid
+              start_date:
+                type: string
+                format: date-time
+              end_date:
+                type: string
+                format: date-time
+              reason:
+                type: string
+              type:
+                type: string
+                enum:
+                  - full-day
+                  - half-day
+                  - short-leave
+              managers: 
+                type: array
+                items:
+                 type: string
+                 format: uuid
+        required: true
+      responses:
+        "201":
+          description: New user created successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: 
+                    type: string
+        "400":
+          $ref: "#/components/responses/bad_request"
+        "500":
+          $ref: "#/components/responses/internal_server_error"                                    
+   delete:
+      tags:
+        - User Leaves
+      summary: delete user leave request
+      description: deletion of user leave Request
+      parameters:
+        - name: user_id
+          in: path
+          description: User ID of the user
+          required: true
+          schema:
+            type: string
+            format: uuid  
+        - name: leave_request_uuid
+          in: path
+          required: true
+          description: Get all leave requests by leave request uuid
+          schema:
+            type: string
+            format: uuid   
+      responses:
+        "201":
+          description: user deleted successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: 
+                    type: string
+        "400":
+          $ref: "#/components/responses/bad_request"
+        "500":
+          $ref: "#/components/responses/internal_server_error"                        
+
+  /users/{user_id}/activate:
+    patch:
+      tags:
+        - User
+      summary: Activate user by User ID
+      description: Activate the user by User ID.
+      parameters:
+        - name: user_id
+          in: path
+          description: User ID of the user
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Successfully updated the user by User ID.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "User activated successfully"
+
+        "400":
+          $ref: "#/components/responses/invalid_payload"
+        "404":
+          $ref: "#/components/responses/document_not_found"
+        "500":
+          $ref: "#/components/responses/internal_server_error"
+  /users/{user_id}/deactivate:
+    patch:
+      tags:
+        - User
+      summary: Deactivate user by User ID
+      description: Deactivate the user by User ID
+      parameters:
+        - name: user_id
+          in: path
+          description: User ID of the user
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Successfully updated the user by User ID.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "User deactivated successfully"
+        "400":
+          $ref: "#/components/responses/invalid_payload"
+        "404":
+          $ref: "#/components/responses/document_not_found"
+        "500":
+          $ref: "#/components/responses/internal_server_error"
+
+  /users/{user_id}/password:
+   put:
+      tags:
+        - User
+      summary: update user password
+      description: Updation of user password
+      parameters:
+        - name: user_id
+          in: path
+          description: User ID of the user
+          required: true
+          schema:
+            type: string
+            format: uuid                
+      requestBody:
+        description: Payload for updating a new user password
+        content:
+          application/json:
+           schema:
+            type: object
+            properties:
+              password:
+                type: string
+        required: true
+      responses:
+        "201":
+          description: New user password updated successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: 
+                    type: string
+        "400":
+          $ref: "#/components/responses/bad_request"
+        "500":
+          $ref: "#/components/responses/internal_server_error"                                    
+
+  /users/{user_id}/check-in:
+   patch:
+      tags:
+        - User Attendance
+      summary: Create a new user check-in
+      description: Creation of a new user check-in
+      parameters:
+        - name: user_id
+          in: path
+          description: User ID of the user
+          required: true
+          schema:
+            type: string
+            format: uuid  
+      responses:
+        "201":
+          description:  user check-in created successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: 
+                    type: string
+        "400":
+          $ref: "#/components/responses/bad_request"
+        "500":
+          $ref: "#/components/responses/internal_server_error"                 
+  /users/{user_id}/check-out:
+   patch:
+      tags:
+        - User Attendance
+      summary: Create a new user check-out
+      description: Creation of a new user check-out
+      parameters:
+        - name: user_id
+          in: path
+          description: User ID of the user
+          required: true
+          schema:
+            type: string
+            format: uuid  
+      responses:
+        "201":
+          description:  user check-out created successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: 
+                    type: string
+        "400":
+          $ref: "#/components/responses/bad_request"
+        "500":
+          $ref: "#/components/responses/internal_server_error"           
+  /users/{user_id}/attendance:
+    get:
+      tags:
+        - User Attendance
+      summary: Get Attendance Record of User for today
+      description: Get attendance record of user for today
+      parameters: 
+        - name: user_id
+          in: path
+          description: User ID of the user
+          required: true
+          schema:
+            type: string
+            format: uuid     
+      responses:
+        "200":
+          description: Succesfully got all users list.
+          content:
+            application/json:
+              schema:
+               type: object  
+               properties:
+                 date:
+                  type: string
+                  format: date
+                 check_in:
+                   type: string
+                   format: time
+                 check_out:
+                   type: string
+                   format: time
+                 status:
+                   type: enum
+                   $ref: "#/components/schemas/AttendanceStatusEnum"
+                 affected_hours:
+                   type: number
+                   format: float
+                 attendance_log:
+                   type:
+                     array
+                   items:
+                     type: object
+                     $ref: "#/components/schemas/AttendanceLogResponseSchema"    
+        "204":
+          description: No content found
+        "400":
+          $ref: "#/components/responses/bad_request"
+        "500":
+          $ref: "#/components/responses/internal_server_error"
+  /users/{user_id}/attendance-report:
+    get:
+      tags:
+        - User Attendance
+      summary: Get Attendance Record of User
+      description: Get attendance record of user for a given date range
+      parameters:
+        - name: date_range
+          in: query
+          description: Attendance record for desired date range.
+          schema:
+            type: array
+            items:
+              type: string
+              format: date
+        - name: organization_uuid
+          in: query
+          description: Organization UUID of user's organization
+          schema:
+            type: string
+            format: uuid
+        - name: status
+          in: query
+          required: false
+          description: Attendance Record according to a particular status type
+          schema:
+            type: string
+            $ref: "#/components/schemas/AttendanceStatusEnum"
+        - name: user_id
+          in: path
+          description: User ID of the user
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Succesfully got all users list.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserAttendanceReportSchema"
+        "204":
+          description: No content found
+        "400":
+          $ref: "#/components/responses/bad_request"
+        "500":
+          $ref: "#/components/responses/internal_server_error"
+
+  /users/{user_id}/leave-report:
+    get:
+      tags:
+        - User Leaves
+      summary: Get Leave Record of User
+      description: Get attendance record of user for a given date range
+      parameters:
+        - name: user_id
+          in: path
+          description: UUID of the user
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: date_range
+          in: query
+          description: Date Range of Leave Report
+          required: true
+          schema:
+            type: array
+      responses:
+        "200":
+          description: Succesfully got all User Leave Report.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserLeaveReportSchema"
+        "204":
+          description: No content found
+        "400":
+          $ref: "#/components/responses/bad_request"
+        "500":
+          $ref: "#/components/responses/internal_server_error"
+  /users/{user_id}/leave-balances:
+    get:
+      tags:
+        - User Leaves
+      summary: Get Leave Balance of User
+      description: Get Leave Balance of user
+      parameters:
+        - name: user_id
+          in: path
+          description: UUID of the user
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+       "200":
+         description: Successfully got leave balance of user.
+         content:
+           application/json:
+             schema:
+               type: array
+               items:
+                 allOf:
+                   - type: object
+                     properties:
+                       leave_allocated:
+                         type: number
+                       balance:
+                         type: number
+                       special_leave_allowance:
+                         type: number
+                       leave_type:
+                         $ref: "#/components/schemas/LeaveTypeResponseSchema"
+                   - $ref: "#/components/schemas/timeStampPayload"
+       "204":
+         description: No content found
+       "400":
+         $ref: "#/components/responses/bad_request"
+       "500":
+         $ref: "#/components/responses/internal_server_error"             
+
+  /holidays:
+    post:
+      tags:
+        - Holiday
+      summary: Create a new holiday
+      description: Creation of a new holiday
+      requestBody:
+        description: Payload for creating a new holiday
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/HolidaySchema"
+        required: true
+      responses:
+        "201":
+          description: New holiday created successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    format: uuid
+        "400":
+          $ref: "#/components/responses/bad_request"
+        "500":
+          $ref: "#/components/responses/internal_server_error"
+    get:
+      tags:
+        - Holiday
+      summary: Get all holidays
+      description: Get the list of the holidays
+      parameters:
+        - name: holiday_type
+          in: query
+          description: Get all holidays by holiday type.
+          schema:
+            type: string
+        - name: date_observed
+          in: query
+          description: Get all holidays by date observed.
+          schema:
+            type: string
+            format: date-time
+        - name: page
+          in: query
+          description: Current page number
+          example: 1
+          schema:
+            type: number
+            default: 1
+        - name: limit
+          in: query
+          description: Number of holidays per page. Maximum limit 20
+          example: 10
+          schema:
+            type: number
+            default: 10
+        - name: order
+          in: query
+          description: Column sort by ascending and descending order
+          schema:
+            type: string
+            default: asc
+            enum:
+              - asc
+              - desc
+        - name: order_column
+          in: query
+          description: Column name according to which sorting will take place
+          schema:
+            type: string
+            default: updated_at
+      responses:
+        "200":
+          description: Succesfully got all holidays list.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AllHolidaysResponseSchema"
+        "204":
+          description: No content found
+        "400":
+          $ref: "#/components/responses/bad_request"
+        "500":
+          $ref: "#/components/responses/internal_server_error"
+  /holidays/{uuid}:
+    get:
+      tags:
+        - Holiday
+      summary: Get holiday by uuid
+      description: Get the holiday by uuid
+      parameters:
+        - name: uuid
+          in: path
+          description: UUID of the holiday
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Successfully got the holiday by uuid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HolidayResponseSchema"
+        "400":
+          $ref: "#/components/responses/invalid_payload"
+        "404":
+          $ref: "#/components/responses/document_not_found"
+        "500":
+          $ref: "#/components/responses/internal_server_error"
+    put:
+      tags:
+        - Holiday
+      summary: Update holiday by uuid
+      description: Update the holiday by uuid
+      parameters:
+        - name: uuid
+          in: path
+          description: UUID of the holiday
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        description: Payload for updating a holiday
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/HolidaySchema"
+        required: true
+      responses:
+        "201":
+          description: New holiday created successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    format: uuid
+        "400":
+          $ref: "#/components/responses/invalid_payload"
+        "404":
+          $ref: "#/components/responses/document_not_found"
+        "500":
+          $ref: "#/components/responses/internal_server_error"
+  /holidays/bulk:
+    post:
+      tags:
+        - Holiday
+      summary: Create holidays in bulk
+      description: Creation of a new holiday
+      requestBody:
+        description: Payload for creating a new holiday
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "#/components/schemas/HolidaySchema"
+        required: true
+      responses:
+        "201":
+          description: New holiday created successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    format: uuid
+        "400":
+          $ref: "#/components/responses/bad_request"
+        "500":
+          $ref: "#/components/responses/internal_server_error"  
+
+  /leave-requests:
+    # post:
+    #   tags:
+    #     - Leave Request
+    #   summary: Create a new leave request
+    #   description: Creation of a new leave request
+    #   requestBody:
+    #     description: Payload for creating a new leave request
+    #     content:
+    #       application/json:
+    #         schema:
+    #           $ref: "#/components/schemas/LeaveRequestSchema"
+    #     required: true
+    #   responses:
+    #     "201":
+    #       description: New Leave Request created successfully.
+    #       content:
+    #         application/json:
+    #           schema:
+    #             $ref: "#/components/schemas/LeaveRequestResponseSchema"
+    #     "400":
+    #       $ref: "#/components/responses/bad_request"
+    #     "500":
+    #       $ref: "#/components/responses/internal_server_error"
+  
+    get:
+      tags:
+        - Leave Request
+      summary: Get all leave requests
+      description: Get the list of the leave requests
+      parameters:
+        - name: status
+          in: query
+          description: Get leave requests by status
+          schema:
+            $ref: "#/components/schemas/StatusType"
+        - name: page
+          in: query
+          description: Current page number
+          example: 1
+          schema:
+            type: number
+            default: 1
+        - name: limit
+          in: query
+          description: Number of leave request per page. Maximum limit 20
+          example: 10
+          schema:
+            type: number
+            default: 10
+      responses:
+        "200":
+          description: Succesfully got all leave request list.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: number
+                    example: 1
+                  total:
+                    type: number
+                    example: 10
+                  perPage:
+                    type: number
+                    example: 10
+                  currrentPage:
+                    type: number
+                    example: 1
+                  rows:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/AllLeaveRequestResponseSchema"
+        "204":
+          description: No content found
+        "400":
+          $ref: "#/components/responses/bad_request"
+        "500":
+          $ref: "#/components/responses/internal_server_error"
+  /leave-requests/{leave_request_uuid}:
+    get:
+      tags:
+        - Leave Request
+      summary: Get leave request by uuid
+      description: Get the leave request by uuid
+      parameters:
+        - name: leave_request_uuid
+          in: path
+          description: UUID of the leave request
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Successfully got the leave request by uuid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetLeaveRequestResponseSchema"
+        "400":
+          $ref: "#/components/responses/invalid_payload"
+        "404":
+          $ref: "#/components/responses/document_not_found"
+        "500":
+          $ref: "#/components/responses/internal_server_error"
+    put:
+      tags:
+        - Leave Request
+      summary: update leave request by uuid
+      description: update the leave request by uuid
+      requestBody:
+        description: Payload for updating a leave request
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_uuid: 
+                  type: string
+                  format: uuid
+                leave_type_uuid:
+                  type: string 
+                  format: uuid
+                start_date:
+                  type: string
+                  format: date-time
+                end_date:
+                  type: string
+                  format: date-time
+                reason:
+                  type: string
+                type:
+                  type: string
+                  enum:
+                    - full-day
+                    - half-day
+                    - short-leave
+                managers: 
+                  type: array
+                  items:
+                   type: string
+                   format: uuid                
+
+      parameters:
+        - name: leave_request_uuid
+          in: path
+          description: UUID of the leave request
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Successfully update the leave request by uuid.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "400":
+          $ref: "#/components/responses/invalid_payload"
+        "404":
+          $ref: "#/components/responses/document_not_found"
+        "500":
+          $ref: "#/components/responses/internal_server_error"
+  /leave-requests/{leave_request_uuid}/approve:
+    patch:
+      tags:
+        - Leave Request
+      summary: approve leave request by uuid
+      description: update the leave request by uuid
+      requestBody:
+        description: Payload for updating a leave request
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                manager_uuid:
+                  type: string
+                  format: uuid
+      parameters:
+        - name: leave_request_uuid
+          in: path
+          description: UUID of the leave request
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Successfully approved the leave request by uuid.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "400":
+          $ref: "#/components/responses/invalid_payload"
+        "404":
+          $ref: "#/components/responses/document_not_found"
+        "500":
+          $ref: "#/components/responses/internal_server_error"  
+  /leave-requests/{leave_request_uuid}/reject:
+    patch:
+      tags:
+        - Leave Request
+      summary: reject leave request by uuid
+      description: reject the leave request by uuid
+      requestBody:
+        description: Payload for rejecting a leave request
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                manager_uuid:
+                  type: string
+                  format: uuid
+      parameters:
+        - name: leave_request_uuid
+          in: path
+          description: UUID of the leave request
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Successfully rejected the leave request by uuid.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "400":
+          $ref: "#/components/responses/invalid_payload"
+        "404":
+          $ref: "#/components/responses/document_not_found"
+        "500":
+          $ref: "#/components/responses/internal_server_error"  
+  /leave-requests/{leave_request_uuid}/recommend:
+    patch:
+      tags:
+        - Leave Request
+      summary: recommend leave request by uuid
+      description: recommend the leave request by uuid
+      requestBody:
+        description: Payload for recommending a leave request
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                manager_uuid:
+                  type: string
+                  format: uuid
+      parameters:
+        - name: leave_request_uuid
+          in: path
+          description: UUID of the leave request
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Successfully recommended the leave request by uuid.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "400":
+          $ref: "#/components/responses/invalid_payload"
+        "404":
+          $ref: "#/components/responses/document_not_found"
+        "500":
+          $ref: "#/components/responses/internal_server_error"                      
+ 
+  /permissions:
+    get:
+      tags:
+        - Permissions
+      summary: Get all permissions
+      description: Get the list of the permissions
+      responses:
+        "200":
+          description: Succesfully got all permissions.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:                      
+                    uuid:
+                      type: string
+                    name:
+                      type: string
+                    description:
+                      type: string
+                    route:
+                      type: string
+        "204":
+          description: No content found
+        "400":
+          $ref: "#/components/responses/bad_request"
+        "500":
+          $ref: "#/components/responses/internal_server_error"
+        
+  # /policies:
+  #   post:
+  #     tags:
+  #       - Policy
+  #     summary: Create a new policy
+  #     description: Creation of a new policy
+  #     requestBody:
+  #       description: Payload for creating a new policy
+  #       content:
+  #         application/json:
+  #           schema:
+  #             type: object
+  #             properties:
+  #               name:
+  #                 type: string
+  #             # $ref: "#/components/schemas/PolicySchema"
+  #       required: true
+  #     responses:
+  #       "201":
+  #         description: New policy created successfully.
+  #         content:
+  #           application/json:
+  #             schema:
+  #               type: object
+  #               properties:
+  #                 schema:
+  #                   type: string
+  #       "400":
+  #         $ref: "#/components/responses/bad_request"
+  #       "500":
+  #         $ref: "#/components/responses/internal_server_error"
+  #   get:
+  #     tags:
+  #       - Policy
+  #     summary: Get all policies
+  #     description: Get the list of the policies
+  #     parameters:
+  #       - name: organization_id
+  #         in: query
+  #         description: Get all policies by organization id.
+  #         schema:
+  #           type: string
+  #           format: uuid
+  #       - name: leave_type_id
+  #         in: query
+  #         description: Get all policies by leave type id.
+  #         schema:
+  #           type: string
+  #           format: uuid
+  #       - name: page
+  #         in: query
+  #         description: Current page number
+  #         example: 1
+  #         schema:
+  #           type: number
+  #           default: 1
+  #       - name: limit
+  #         in: query
+  #         description: Number of policies per page. Maximum limit 20
+  #         example: 10
+  #         schema:
+  #           type: number
+  #           default: 10
+  #       - name: order
+  #         in: query
+  #         description: Column sort by ascending and descending order
+  #         schema:
+  #           type: string
+  #           default: asc
+  #           enum:
+  #             - asc
+  #             - desc
+  #       - name: order_column
+  #         in: query
+  #         description: Column name according to which sorting will take place
+  #         schema:
+  #           type: string
+  #           default: updated_at
+  #     responses:
+  #       "200":
+  #         description: Succesfully got all policies list.
+  #         content:
+  #           application/json:
+  #             schema:
+  #               type: object
+  #               properties:
+  #                 count:
+  #                   type: number
+  #                   example: 1
+  #                 total:
+  #                   type: number
+  #                   example: 10
+  #                 perPage:
+  #                   type: number
+  #                   example: 10
+  #                 currrentPage:
+  #                   type: number
+  #                   example: 1
+
+  /attendances:
+    get:
+      tags:
+        - Attendance
+      summary: Get Attendance of a User
+      description: Get  Attendance of a User
+      parameters:
+        - name: user_uuid
+          in: query
+          description: User UUID of the user.
+          schema:
+            type: string
+            format: uuid
+        - name: date
+          in: query
+          description: Date of which I want the attendance
+          schema:
+            type: string
+            format: date
+        - name: date_range
+          in: query
+          description: Get all holidays by date range.
+          schema:
+            type: array
+            items: 
+              type: string
+              format: date-time 
+        - name: organization_role_uuid
+          in: query
+          description: Organization Role UUID of the user.
+          schema:
+            type: string
+            format: uuid  
+        - name: department_uuid
+          in: query
+          description: department UUID of the user.
+          schema:
+            type: string
+            format: uuid      
+        - name: status
+          in: query
+          description: Get leave requests by status
+          schema:
+            $ref: "#/components/schemas/AttendanceStatusEnum"
+        - name: page
+          in: query
+          description: Current page number
+          example: 1
+          schema:
+            type: number
+            default: 1
+        - name: limit
+          in: query
+          description: Number of leave request per page. Maximum limit 20
+          example: 10
+          schema:
+            type: number
+            default: 10            
+      responses:
+        "200":
+          description: Successfully got attendance of user for that day.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/GetAttendanceOfUserSchema"
+                  - $ref: "#/components/schemas/listResponsePayload"
+
+        "204":
+          description: No content found
+        "400":
+          $ref: "#/components/responses/bad_request"
+        "500":
+          $ref: "#/components/responses/internal_server_error"    
+    post:
+      tags:
+        - Attendance
+      summary: Create or Update a Attendance
+      description: Creation or Updation of a Attendance
+      requestBody:
+        description: Payload for creating or updating user
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateAttendanceRequestSchema"
+        required: true
+      responses:
+        "201":
+          description: New user Attendance created successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    format: uuid
+        "400":
+          $ref: "#/components/responses/bad_request"
+        "500":
+          $ref: "#/components/responses/internal_server_error"
+  /attendances/bulk:
+    post:
+      tags:
+        - Attendance
+      summary: Create or Update a Attendance in Bulk
+      description: Creation or Updation of a Attendance
+      requestBody:
+        description: Payload for creating a new user
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  user_uuid:
+                    type: string
+                    format: uuid
+                  check_in:
+                    type: string
+                    format: time
+                  check_out:
+                    type: string
+                    format: time
+                  date: 
+                    type: string
+                    format: date
+                  status: 
+                    type: enum
+                    $ref: "#/components/schemas/AttendanceStatusEnum"
+                  attendance_logs:
+                    type: object
+                    $ref: "#/components/schemas/AttendanceLogResponseSchema"
+        required: true
+      responses:
+        "201":
+          description: New user Attendance created successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    format: uuid
+
+
+        "400":
+          $ref: "#/components/responses/bad_request"
+        "500":
+          $ref: "#/components/responses/internal_server_error"
+
+  /actions:
+    get:
+      tags:
+        - Action
+      summary: Get all Actions
+      description: Get all Actions    
+      responses:
+        "200":
+          description: Successfully got attendance of user for that day.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    value:
+                      type: string
+components:
+  schemas:
+    UserLeaveReportSchema: 
+      type: array
+      items:
+        type: object
+      properties:
+        total_leaves:
+          type: string
+          format: number
+        month:
+          type: string
+          format: date
+    UserAttendanceReportSchema:
+      type: object
+      properties:
+        status_count:
+          type: object
+        affected_hours:
+          type: array
+          items:
+            type: object
+            properties:
+              affected_hours:
+                type: string
+              date:
+                type: string
+                format: date
+        avarage: 
+          type: object
+          properties: 
+            user:
+              type: string
+            organization:
+              type: string
+    OrganizationLeaveReportSchema: 
+      type: object
+      properties:
+        total_leaves_per_month:
+          type: array
+          items:
+            type: object
+            properties:
+              total_leaves:
+                type: number
+              month: 
+                type: string
+        total_leaves_per_leave_type:
+          type: array
+          items:
+            type: object
+            properties:
+              code:
+                type: string
+              uuid:
+                type: string
+                format: uuid
+              count: 
+                type: number
+    CreateAttendanceRequestSchema:
+      type: object
+      properties:
+        user_uuid:
+          type: string
+          format: uuid
+        date:
+         type: string
+         format: date
+        check_in:
+          type: string
+          format: time
+        check_out:
+          type: string
+          format: time
+        status:
+          type: enum
+          $ref: "#/components/schemas/AttendanceStatusEnum"      
+                  
+    GetAttendanceOfUserSchema:
+      type:
+        array
+      items:
+        type: object  
+        properties:
+          date:
+           type: string
+           format: date
+          check_in:
+            type: string
+            format: time
+          check_out:
+            type: string
+            format: time
+          status:
+            type: enum
+            $ref: "#/components/schemas/AttendanceStatusEnum"
+          affected_hours:
+            type: number
+            format: float
+          user:
+            type: object
+            properties:
+              user_id:
+                type: string
+                format: uuid
+              name:
+                type: string
+          attendance_log:
+            type:
+              array
+            items:
+              type: object
+              $ref: "#/components/schemas/AttendanceLogResponseSchema"
+
+    ErrorResponseSchema:
+      type: object
+      properties:
+        error:
+          type: string
+    AttendanceLogResponseSchema:
+      type: object
+      properties:
+          time:
+            type: string
+            format: time
+          type:
+            $ref: "#/components/schemas/AttendanceLogTypeEnum"
+          location:
+            type: string
+            format: ipv6    
+    AttendanceLogTypeEnum:
+      type: string
+      enum:
+        - check_in
+        - check_out            
+    AttendanceStatusEnum:
+      type: string
+      enum:
+        - present
+        - absent
+        - on_leave
+        - holiday
+        - early_departure
+        - on_duty
+        - work_from_home
+        - half_day
+        - missed_punch
+    ShiftTypeEnum:
+      type: string
+      enum:
+        - day
+        - night
+    OrganizationRequestSchema:
+      title: Organization Request Schema
+      type: object
+      properties:
+        name:
+          type: string
+          example: ABCD Organization
+        domain:
+          type: string
+          example: abcd.com
+      required:
+        - name
+    OrganizationResponseSchema:
+      title: Organization Response Schema
+      allOf:
+        - type: object
+          properties:
+            uuid:
+              type: string
+              format: uuid
+        - $ref: "#/components/schemas/OrganizationRequestSchema"
+        - $ref: "#/components/schemas/timeStampPayload"
+    AllOrganizationsResponseSchema:
+      title: All Organizations Response Schema
+      allOf:
+        - $ref: "#/components/schemas/listResponsePayload"
+        - type: object
+          properties:
+            rows:
+              type: array
+              items:
+                $ref: "#/components/schemas/OrganizationResponseSchema"
+
+    DepartmentSchema:
+      title: Department Request Schema
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
+      required:
+        - name
+    DepartmentRequestSchema:
+      title: Department Request Schema
+      allOf:
+        - $ref: "#/components/schemas/DepartmentSchema"
+        - type: object
+          properties:
+            organizationId:
+              type: string
+              format: uuid
+          required:
+            - organizationId
+    DepartmentResponseSchema:
+      title: Department Response Schema
+      allOf:
+        - type: object
+          properties:
+            uuid:
+              type: string
+              format: uuid
+        - $ref: "#/components/schemas/DepartmentSchema"
+        - type: object
+          properties:
+            organization:
+              $ref: "#/components/schemas/OrganizationResponseSchema"
+        - $ref: "#/components/schemas/timeStampPayload"
+    AllDepartmentsResponseSchema:
+      title: All Departments Response Schema
+      allOf:
+        - $ref: "#/components/schemas/listResponsePayload"
+        - type: object
+          properties:
+            rows:
+              type: array
+              items:
+                $ref: "#/components/schemas/DepartmentResponseSchema"
+
+    RoleRequestSchema:
+      title: Role Request Schema
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
+      required:
+        - name
+    RoleResponseSchema:
+      title: Role Response Schema
+      allOf:
+        - type: object
+          properties:
+            uuid:
+              type: string
+              format: uuid
+        - $ref: "#/components/schemas/RoleRequestSchema"
+        - $ref: "#/components/schemas/timeStampPayload"
+    AllRolesResponseSchema:
+      title: All Roles Response Schema
+      allOf:
+        - $ref: "#/components/schemas/listResponsePayload"
+        - type: object
+          properties:
+            rows:
+              type: array
+              items:
+                $ref: "#/components/schemas/RoleResponseSchema"
+    AllOrganizationRolesResponseSchema:
+      title: All Organization Roles Response Schema
+      type: array
+      items:
+        $ref: "#/components/schemas/OrganizationRoleItemSchema"
+    OrganizationRoleResponseSchema: 
+      title: Organization Role Response schema
+      type: object
+      properties:
+        allOf:
+         $ref: "#/components/schemas/OrganizationRoleItemSchema"
+        role_permissions:
+          type: array
+          items: 
+            type: string
+    OrganizationRoleItemSchema:
+      title: Organization Role Item
+      type: object
+      properties:
+        uuid: 
+          type: string
+        shift_type:
+          type: string
+          $ref: "#/components/schemas/ShiftTypeEnum"
+        role_description:
+          type: string
+        role:
+          $ref: "#/components/schemas/RoleResponseSchema"      
+    UserSchema:
+      title: User Request Schema
+      type: object
+      properties:
+        name:
+          type: string
+        personal_email:
+          type: string
+          format: email
+        status:
+          default: "active"
+          $ref: "#/components/schemas/UserStatusType"
+        phone_number:
+          type: string
+        date_of_joining:
+          type: string
+          format: date-time
+        parent_id:
+          type: string
+          format: uuid
+          nullable: true
+        personal_detail:
+          $ref: "#/components/schemas/UserPersonalDetailsRequestSchema"          
+      required:
+        - name
+        - personal_email
+        - status
+        - phone_number
+        - email
+        - date_of_joining
+    UserRequestSchema:
+      title: User Request Schema
+      allOf:
+        - $ref: "#/components/schemas/UserSchema"
+        - type: object
+          properties:
+            email:
+              type: string
+              format: email
+            password:
+              type: string
+            organization_uuid:
+              type: string
+              format: uuid
+            department_uuid:
+              type: string
+              format: uuid
+            organization_role_uuid:
+              type: string
+              format: uuid
+            personal_detail:
+              $ref: "#/components/schemas/UserPersonalDetailsRequestSchema"
+            profile_image:
+              $ref: "#/components/schemas/UserProfileImageRequestSchema"
+           
+          required:
+            - department_uuid
+            - organization_role_uuid
+    UserProfileImageRequestSchema:
+      title: User Profile Image Request Schema
+      type: object
+      properties:
+        name: 
+          type: string
+        url:
+          type: string
+        size:
+          type: string
+    
+    UserPersonalDetailsRequestSchema:
+      title: User Personal Details Request Schema
+      type: object
+      properties:
+        parent_information:
+          type: string
+        emergency_contact:
+          type: string
+        dob: 
+          type: string
+          format: date-time
+        blood_group:
+          type: string
+          enum:
+            - A+
+            - A-
+            - B+
+            - B-
+            - AB+
+            - AB-
+            - O+
+            - O-
+        marital_status:
+          type: string
+          enum:
+            - single
+            - married
+            - divorced
+            - widowed
+        current_address:
+          type: string
+        permanent_address:
+          type: string
+        gender: 
+          type: string
+          enum:
+          - male
+          - female
+          - other
+    UserResponseSchema:
+      title: User Response Schema
+      allOf:
+        - type: object
+          properties:
+            user_id:
+              type: string
+              format: uuid
+            email:
+              type: string
+              format: email
+        - $ref: "#/components/schemas/UserSchema"
+        - type: object
+          properties:
+            bradford_score:
+              type: number
+              format: int8
+              minimum: 0
+              maximum: 100
+        - $ref: "#/components/schemas/timeStampPayload"
+    IndividualUserResponseSchema:
+      title: Individual User Response Schema
+      allOf:
+        - $ref: "#/components/schemas/UserResponseSchema"
+        - type: object
+          properties:
+            organization:
+              $ref: "#/components/schemas/OrganizationResponseSchema"
+            department:
+              $ref: "#/components/schemas/DepartmentSchema"
+            role:
+              $ref: "#/components/schemas/RoleResponseSchema"
+    AllUsersResponseSchema:
+      title: All Users Response Schema
+      allOf:
+        - $ref: "#/components/schemas/listResponsePayload"
+        - type: object
+          properties:
+            rows:
+              type: array
+              items:
+                allOf:
+                  - $ref: "#/components/schemas/UserResponseSchema"
+
+    UserPersonalData:
+      title: User Personal Data Schema
+      type: object
+      properties:
+        user_id:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        deleted_at:
+          type: string
+          format: date-time
+          nullable: true
+
+    Permission:
+      title: Permission Schema
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
+        route:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        deleted_at:
+          type: string
+          format: date-time
+          nullable: true
+
+    HolidaySchema:
+      title: Holiday Schema
+      required:
+        - name
+        - date_observed
+        - holiday_type
+      type: object
+      properties:
+        name:
+          type: string
+        date_observed:
+          type: string
+          format: date-time
+        holiday_type:
+          $ref: "#/components/schemas/HolidayType"
+        description:
+          type: string
+          nullable: true
+    HolidayResponseSchema:
+      title: Holiday Response Schema
+      allOf:
+        - type: object
+          properties:
+            uuid:
+              type: string
+              format: uuid
+        - $ref: "#/components/schemas/HolidaySchema"
+        - $ref: "#/components/schemas/timeStampPayload"
+    AllHolidaysResponseSchema:
+      title: All Holidays Response Schema
+      allOf:
+        - $ref: "#/components/schemas/listResponsePayload"
+        - type: object
+          properties:
+            rows:
+              type: array
+              items:
+                $ref: "#/components/schemas/HolidayResponseSchema"
+    OrganizationHolidaysResponseSchema:
+      title: Organization Holidays Response Schema
+      allOf:
+        - type: object
+          properties:
+            count:
+              type: number
+            rows:
+              type: array
+              items:
+                $ref: "#/components/schemas/HolidayResponseSchema"
+    Policy:
+      title: Policy Schema
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        organization_id:
+          type: number
+          format: uuid
+        leave_type_id:
+          type: number
+          format: uuid
+        sandwich_enabled:
+          type: boolean
+        carry_forward_limit:
+          type: number
+        min_notice_period:
+          type: number
+        clubbing_enabled:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        deleted_at:
+          type: string
+          format: date-time
+          nullable: true
+
+    LeaveType:
+      title: Leave Type Schema
+      type: object
+      required:
+        - name
+        - is_paid_leave
+        - code
+        - organization_uuid
+        - start_date
+        - end_date
+      properties:
+        name:
+          type: string
+        is_paid_leave:
+          type: boolean
+        code:
+          type: string
+        start_date:
+          type: string
+          format: date-time
+        expiry_date:
+          type: string
+          format: date-time
+        description:
+          type: string
+          nullable: true
+        min_waiting_period:
+          type: number
+        is_attachemnt_required:
+          type: boolean
+        is_sandwich_enabled:
+          type: boolean
+        is_clubbing_enabled:
+          type: boolean
+        carryforward:
+          type: object
+          required:
+            - max_limit
+            - expiry_date
+          properties:
+            max_limit:
+              type: number
+            expiry_date:
+              type: string
+              format: date-time
+        accural:
+          type: object
+          required:
+            - period
+            - applicable_on
+            - leave_count
+          properties:
+            period:
+              type: string
+              enum:
+                - monthly
+                - yearly
+                - quarterly
+                - half_yearly
+            applicable_on:
+              type: string
+              enum:
+                - start
+                - end
+                - date_of_joining
+            leave_count:
+              type: string
+        applicable_for:
+          type: object
+          required:
+            - gender
+            - marital_status
+            - min_experience
+          properties:
+            type:
+              type: string
+              enum:
+                - employee
+                - role
+            value:
+              oneOf:
+                - type: string
+                  example: "all"
+                - type: array
+                  items:
+                    type: string
+                    format: uuid
+            gender:
+              type: string
+              enum:
+                - all
+                - male
+                - female
+            marital_status:
+              type: string
+              enum:
+                - all
+                - single
+                - married
+                - divorced
+                - widowed
+            min_experience:
+              type: number
+
+    LeaveTypeListResponseSchema:
+      title: Leave Type List Response Schema
+      allOf:
+        - $ref: "#/components/schemas/listResponsePayload"
+        - type: object
+          properties:
+            rows:
+              type: array
+              items:
+                $ref: "#/components/schemas/LeaveTypeResponseSchema"
+
+    LeaveTypeResponseSchema:
+      title: Leave Type Response Schema
+      allOf:
+        - type: object
+          properties:
+            uuid:
+              type: string
+              format: uuid
+        - $ref: "#/components/schemas/LeaveType"
+        - $ref: "#/components/schemas/timeStampPayload"
+    LeaveRequestSchema:
+      title: Leave Request Schema
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        user_id:
+          type: number
+        leave_type_id:
+          type: number
+        start_date:
+          type: string
+          format: date-time
+        end_date:
+          type: string
+          format: date-time
+        leave_duration:
+          type: number
+          format: int8
+          minimum: 0.25
+        reason:
+          type: string
+        request_date:
+          type: string
+          format: date-time
+        remarks:
+          type: string
+          nullable: true
+        status:
+          $ref: "#/components/schemas/StatusType"
+        approver_id:
+          type: number
+      required:
+        - user_id
+        - leave_type_id
+        - start_date
+        - end_date
+        - request_date
+    AllOfLeaveRequestResponseSchema:
+      title: Get All Leave Request Response Schema
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        start_date:
+          type: string
+          format: date-time
+        end_date:
+          type: string
+          format: date-time
+        reason:
+          type: string
+        request_date:
+          type: string
+          format: date-time
+        status_changed_date:
+          type: string
+          format: date-time
+        is_sandwich:
+          type: boolean
+        clubbed_with:
+          type: string
+          nullable: true
+        remarks:
+          type: string
+          nullable: true
+        status:
+          $ref: "#/components/schemas/StatusType"
+        manager_id:
+          type: number
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        deleted_at:
+          type: string
+          format: date-time
+          nullable: true
+    LeaveRequestResponseSchema:
+      title: Leave Request Response Schema
+      type: object
+      allOf:
+        - $ref: "#/components/schemas/LeaveRequestSchema"
+        - type: object
+          properties:
+            uuid:
+              type: string
+              format: uuid
+            leave_duration:
+              type: number
+              format: int8
+              minimum: 0.25
+            status_changed_date:
+              type: string
+              format: date-time
+              default: null
+              nullable: true
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+    UserLeaveRequestsResponseSchema:
+      title: Get All Leave Request Response Schema
+      allOf:
+        - $ref: "#/components/schemas/listResponsePayload"
+        - $ref: "#/components/schemas/AllOfLeaveRequestResponseSchema"
+        - type: object
+          properties:
+            uuid:
+              type: string
+              format: uuid
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+            deleted_at:
+              type: string
+              format: date-time
+              nullable: true
+            leave_type:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "Annual Leave"
+                uuid: 
+                  type: string
+            user:
+              type: object
+              properties:
+                user_id:
+                  type: number
+                  example: 1
+                name:
+                  type: string
+                  example: "John Doe"
+                email:
+                  type: string
+                  example: "john@gmail.com"
+                bradford_score:
+                  type: number
+                  example: 10
+                organization_id:
+                  type: number
+                  example: 1
+                role_id:
+                  type: number
+                  example: 1
+                date_of_joining:
+                  type: string
+                  format: date-time
+                  example: "2022-12-31T00:00:00.000Z"              
+            managers:
+              type: array
+              items:
+                type: object
+                properties:
+                  allOf:
+                    $ref: "#/components/schemas/UserResponseSchema"
+                  remarks:
+                    type: string  
+    UserLeaveRequestResponseSchema:
+      title: Get All Leave Request Response Schema
+      allOf:
+        - $ref: "#/components/schemas/AllOfLeaveRequestResponseSchema"
+        - type: object
+          properties:
+            uuid:
+              type: string
+              format: uuid
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+            deleted_at:
+              type: string
+              format: date-time
+              nullable: true
+            user:
+               $ref: "#/components/schemas/IndividualUserResponseSchema"
+            leave_type:
+              $ref: "#/components/schemas/LeaveTypeResponseSchema"        
+            managers:
+              type: array
+              items:
+                type: object
+                properties:
+                  allOf:
+                    $ref: "#/components/schemas/IndividualUserResponseSchema"
+                  remarks:
+                    type: string 
+    AllLeaveRequestResponseSchema:
+      title: Get All Leave Request Response Schema
+      allOf:
+        - $ref: "#/components/schemas/AllOfLeaveRequestResponseSchema"
+        - type: object
+          properties:
+            uuid:
+              type: string
+              format: uuid
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+            deleted_at:
+              type: string
+              format: date-time
+              nullable: true
+            leave_type:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "Annual Leave"
+                uuid:
+                  type: string
+                  format: uuid
+            user:
+              type: object
+              properties:
+                user_id:
+                  type: number
+                  example: 1
+                name:
+                  type: string
+                  example: "John Doe"
+                email:
+                  type: string
+                  example: "john@gmail.com"
+                bradford_score:
+                  type: number
+                  example: 10
+                organization_id:
+                  type: number
+                  example: 1
+                role_id:
+                  type: number
+                  example: 1
+                date_of_joining:
+                  type: string
+                  format: date-time
+                  example: "2022-12-31T00:00:00.000Z"          
+            managers:
+              type: array
+              items:
+                type: object
+                properties:
+                  allOf:
+                    $ref: "#/components/schemas/UserResponseSchema"
+                  remarks:
+                    type: string 
+    GetLeaveRequestResponseSchema:
+      title: Get All Leave Request Response Schema
+      allOf:
+        - $ref: "#/components/schemas/AllOfLeaveRequestResponseSchema"
+        - type: object
+          properties:
+            uuid:
+              type: string
+              format: uuid
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+            deleted_at:
+              type: string
+              format: date-time
+              nullable: true
+            leave_type:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "Annual Leave"
+                allowed_days:
+                  type: number
+                  example: 2
+                description:
+                  type: string
+                  example: "Anything"
+                  nullable: true
+                is_active:
+                  type: boolean
+                  example: true
+                carry_forward_expiry:
+                  type: string
+                  format: date-time
+                  example: "2022-12-31T00:00:00.000Z"
+                is_sandwich_allowed:
+                  type: boolean
+                  example: false
+                can_be_clubbed:
+                  type: boolean
+                  example: false
+                carry_forward_allowed:
+                  type: boolean
+                  example: false
+                maximum_carry_forward:
+                  type: number
+                  example: 0
+                is_paid_leave:
+                  type: boolean
+                  example: true
+            user:
+              $ref: "#/components/schemas/IndividualUserResponseSchema" 
+            managers:
+              type: array
+              items:
+                type: object
+                properties:
+                  allOf:
+                    $ref: "#/components/schemas/IndividualUserResponseSchema"
+                  remarks:
+                    type: string     
+    StatusType:
+      type: string
+      enum:
+        - Pending
+        - Approved
+        - Rejected
+        - Cancelled
+    HolidayType:
+      type: string
+      enum:
+        - Organization
+        - Public
+        - Optional
+    UserStatusType:
+      type: string
+      enum:
+        - active
+        - inactive
+
+    timeStampPayload:
+      type: object
+      required:
+        - created_at
+        - updated_at
+      properties:
+        created_at:
+          type: string
+          format: date-time
+          description: Creation date and time
+        updated_at:
+          type: string
+          format: date-time
+          description: Updation date and time
+        deleted_at:
+          type: string
+          format: date-time
+          description: Deletion date and time
+          example: null
+
+    listResponsePayload:
+      type: object
+      required:
+        - total
+        - count
+        - current_page
+        - per_page
+        - rows
+      properties:
+        total:
+          type: number
+          example: 20
+        currentPage:
+          type: number
+          example: 1
+        perPage:
+          type: number
+          example: 1
+        count:
+          type: number
+          example: 1
+
+  responses:
+    bad_request:
+      description: "Bad Request"
+      content:
+        application/json:
+          example:
+            error: "Bad Request Check the Payload"
+    invalid_payload:
+      description: Invalid payload
+      content:
+        application/json:
+          example:
+            error: "Provided uuid is invalid."
+          schema:
+            $ref: "#/components/schemas/ErrorResponseSchema"
+    internal_server_error:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponseSchema"
+          example:
+            error: "Internal server error"
+    document_not_found:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponseSchema"
+          example:
+            error: "Document not found"
+    conflict:
+      description: Conflict
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponseSchema"
+          example:
+            error: "Conflict"
